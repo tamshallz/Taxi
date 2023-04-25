@@ -1,26 +1,28 @@
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:taxi_app/Pages/signin_page.dart';
 import '../Screens/home_screen.dart';
 import '../constants.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  final VoidCallback showRegisterScreen;
+
+  
+  const LoginScreen({
+    Key? key,
+    required this.showRegisterScreen,
+  }) : super(key: key);
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  //
-  final bool _isLogin = false;
-  final bool _isLoading = false;
+class _LoginScreenState extends State<LoginScreen> {
+
+  final bool _isloading = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                 child: Container(
                   width: 320,
-                  height: 640,
+                  height: 520,
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.03),
                       borderRadius: BorderRadius.circular(16),
@@ -73,58 +75,56 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               // LOGO
                               Center(
                                 child: Image.asset('Images/taxi_logo.png',
-                                    height: 80, width: 80),
+                                    height: 60, width: 60),
                               ),
 
                               //
-                              const SizedBox(height: 25),
+                              const SizedBox(height: 23),
                               Text(
-                                'Sign Up',
+                                'Hello! There',
                                 style: TextStyle(
                                   color: kWhite,
                                   fontWeight: FontWeight.bold,
                                   fontSize: kHeader1,
                                 ),
                               ),
+
+                              const SizedBox(height: 15),
+                                 Text(
+                                'Please login below',
+                                style: TextStyle(
+                                  color: kWhite,                            
+                                ),
+                              ),
                               const SizedBox(height: 25),
-                              _username(),
                               _email(),
                               _password(),
-                              _confirmPassword(),
 
                               //BUTTON SECTION
                               const SizedBox(height: 20),
                               _button(),
 
-                              //SIGN UP SECTION
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Already have an account?',
-                                    style:
-                                        TextStyle(color: kWhite, fontSize: 16),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SignInScreen(),
-                                        ),
-                                      );
-                                    },
-                                    child: Text(
-                                      'Sign Up',
-                                      style: TextStyle(
-                                        color: Colors.yellow.shade700,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              const SizedBox(height: 10),
+                              //
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                  'Or',
+                                  style: TextStyle(color: kWhite),
+                                ),
                               ),
+
+                              TextButton(
+                                onPressed: widget.showRegisterScreen,
+                                child: Text(
+                                  'Register',
+                                  style: TextStyle(
+                                    fontSize: 23,
+                                    color: Colors.yellow.shade700,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -135,34 +135,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-//
-  _username() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        controller: _usernameController,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a username';
-          }
-          return null;
-        },
-        // Decoration
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.white)),
-          prefixIcon: Icon(Icons.person, color: kWhite),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.white)),
-          hintText: 'Username',
-          hintStyle: TextStyle(color: kWhite),
         ),
       ),
     );
@@ -223,36 +195,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  _confirmPassword() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextFormField(
-        obscureText: true,
-        controller: _confirmController,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a valid password';
-          }
-          return null;
-        },
-        // Decoration
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.white)),
-          prefixIcon: Icon(Icons.person, color: kWhite),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.white)),
-          hintText: 'Confirm Password',
-          hintStyle: TextStyle(color: kWhite),
-        ),
-      ),
-    );
-  }
-
   _button() {
-    return Container(
+    return SizedBox(
       height: 50,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -260,22 +204,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
             backgroundColor: Colors.yellow.shade800
             //Color(0xffffab00),
             ),
-        onPressed: () {
-          FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                email: _emailController.text,
-                password: _passwordController.text,
-              )
-              .then(
-                (value) => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ))
-                    .onError((error, stackTrace) =>
-                        debugPrint('Error ${error.toString()}')),
-              );
-        },
+        onPressed: () => _isloading == true ? const CircularProgressIndicator() : FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+              email: _emailController.text,
+              password: _passwordController.text,
+            )
+            .then(
+              (value) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ))
+                  .onError((error, stackTrace) =>
+                      debugPrint('Error ${error.toString()}')),
+            ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -283,7 +225,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Icon(Icons.login_outlined),
             SizedBox(width: 15),
             Text(
-              'Sign Up',
+              'Login',
               style: TextStyle(fontSize: 23),
             ),
           ],
